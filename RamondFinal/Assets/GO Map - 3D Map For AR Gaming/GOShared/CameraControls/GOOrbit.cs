@@ -111,35 +111,38 @@ namespace GoShared {
 
 				Vector3 v2 = Camera.main.WorldToScreenPoint (target.position);
 
-				float angle = (Mathf.Atan2 (v1.y - v2.y, v1.x - v2.x) * 180.0f / Mathf.PI) + 180.0f;
-				if (firstLaunch)
-					angle = 0f;
+				//float angle = (Mathf.Atan2 (v1.y - v2.y, v1.x - v2.x) * 180.0f / Mathf.PI) + 180.0f;
+				//if (firstLaunch)
+				//	angle = 0f;
 
-				if (prevAngle == 361) {
-					prevAngle = angle;
-				}
+				//if (prevAngle == 361) {
+				//	prevAngle = angle;
+				//}
 
-				if (autoOrbit) {
-				
-					prevAngle = angle;
-					currentAngle += orbitSpeed;
+				//if (autoOrbit) {
 
-                } else if (rotateWithHeading) {
-                    
-                    Input.compass.enabled = true;
-                    currentAngle = Input.compass.trueHeading;
+				//	prevAngle = angle;
+				//	currentAngle += orbitSpeed;
 
-                } else if (angle != prevAngle) {
-					
-					float delta = angle - prevAngle;
-					if (delta > 180.0f) {
-						delta -= 360;
-					} else if (delta < -180.0f) {
-						delta += 360;
-					}
-					prevAngle = angle;
-					currentAngle += delta * orbitSpeed;
-				}
+				//            } else if (rotateWithHeading) {
+
+				//                Input.compass.enabled = true;
+				//                currentAngle = Input.compass.trueHeading;
+
+				//            } else if (angle != prevAngle) {
+
+				//	float delta = angle - prevAngle;
+				//	if (delta > 180.0f) {
+				//		delta -= 360;
+				//	} else if (delta < -180.0f) {
+				//		delta += 360;
+				//	}
+				//	prevAngle = angle;
+				//	currentAngle += delta * orbitSpeed;
+				//}
+
+				Vector3 deltaLocation = new Vector3(v1.y - v2.y,0, v1.x - v2.x)*Time.deltaTime;
+				LocationManager.instance.AddLocation(deltaLocation);
 			} else {
 				prevAngle = 361;
 			}

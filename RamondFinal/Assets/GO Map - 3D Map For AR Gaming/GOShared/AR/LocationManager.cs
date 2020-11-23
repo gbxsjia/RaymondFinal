@@ -11,6 +11,7 @@ namespace GoShared {
 
     public class LocationManager : BaseLocationManager {
 
+		public static LocationManager instance;
 
         [Header("Location Settings")]
 		public bool useLocationServices;
@@ -39,8 +40,19 @@ namespace GoShared {
 
         private Camera cam;
 
-		// Use this for initialization
-		void Start () {
+        private void Awake()
+        {
+            if (instance == null)
+            {
+				instance = this;
+			}
+            else
+            {
+				enabled = false;
+            }
+        }
+        // Use this for initialization
+        void Start () {
 
             if ((Application.isEditor || !Application.isMobilePlatform) && motionMode != MotionMode.UnityRemote) {
 				useLocationServices = false;
@@ -377,8 +389,15 @@ namespace GoShared {
 		}
 
 		#endregion
-
-
+		public void AddLocation(Vector3 deltaLocation)
+        {
+			Vector3 current = currentLocation.convertCoordinateToVector();
+			currentLocation = Coordinates.convertVectorToCoordinates(current+deltaLocation);
+			if (onLocationChanged != null)
+			{
+				onLocationChanged.Invoke(currentLocation);
+			}
+		}
 
 		#region DEMO LOCATIONS
 
