@@ -21,7 +21,13 @@ public class CameraAvatar : MonoBehaviour
 	private bool firstLaunch = true;
 	private bool isReady = false;
 
-    private void Start()
+	public float DragSpeed;
+
+	public GameObject projectorPrefab;
+	private GameObject currentProjector;
+
+	private float ClickTimer;
+	private void Start()
     {
 		StartCoroutine(LoadStartPosition());
 	}
@@ -69,51 +75,25 @@ public class CameraAvatar : MonoBehaviour
 
 		if (drag)
 		{
-
-            //float angle = (Mathf.Atan2 (v1.y - v2.y, v1.x - v2.x) * 180.0f / Mathf.PI) + 180.0f;
-            //if (firstLaunch)
-            //	angle = 0f;
-
-            //if (prevAngle == 361) {
-            //	prevAngle = angle;
-            //}
-
-            //if (autoOrbit) {
-
-            //	prevAngle = angle;
-            //	currentAngle += orbitSpeed;
-
-            //            } else if (rotateWithHeading) {
-
-            //                Input.compass.enabled = true;
-            //                currentAngle = Input.compass.trueHeading;
-
-            //            } else if (angle != prevAngle) {
-
-            //	float delta = angle - prevAngle;
-            //	if (delta > 180.0f) {
-            //		delta -= 360;
-            //	} else if (delta < -180.0f) {
-            //		delta += 360;
-            //	}
-            //	prevAngle = angle;
-            //	currentAngle += delta * orbitSpeed;
-            //}
-      
-			Vector3 deltaLocation = new Vector3(LastMousePosition.x - newPos.x, 0, LastMousePosition.y - newPos.y) * Time.deltaTime; 
+			ClickTimer += Time.deltaTime;
+			Vector3 deltaLocation = new Vector3(LastMousePosition.x - newPos.x, 0, LastMousePosition.y - newPos.y) * DragSpeed * Time.deltaTime; 
 			if (firstLaunch)
 			{
 				deltaLocation = Vector3.zero;
 			}
-			LocationManager.instance.AddLocation(deltaLocation);
-			transform.position = LocationManager.instance.currentLocation.convertCoordinateToVector(0);
-
+			transform.position += deltaLocation;
+			LocationManager.instance.UpdateLocation(transform.position);
 			//print("first: " + firstLaunch + " loc: " + LocationManager.instance.currentLocation.convertCoordinateToVector(0));
 			LastMousePosition =newPos;
 			firstLaunch = false;
 		}
         else
         {
+			if(ClickTimer>0 && ClickTimer < 0.2f)
+            {
+				Click();
+            }
+			ClickTimer = 0;
 			firstLaunch = true;
         }
 
@@ -144,27 +124,29 @@ public class CameraAvatar : MonoBehaviour
 			distance = Mathf.Clamp(newD, distanceMin, distanceMax);
 
 		}
-
-
-		//if (clipPlane != null && clipPlane.IsAboutToClip(false))
-		//{
-
-		//	distance += deltaD + 2;
-		//}
-
-
-		//float height = EvaluateCurrentHeight(distance);
-
-
-		//Quaternion rotation = Quaternion.Euler(height, currentAngle, 0);
-		//Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
-		//Vector3 position = rotation * negDistance + target.position;
-
-		//objToRotate.rotation = rotation * Quaternion.Euler(-offset, 0, 0);
-		//objToRotate.position = position;
-
 	}
 
+	private void Click()
+	{
+		RaycastHit hit;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, GoMap.GOMap.GetActiveMasks()))
+		{
+
+			//From the raycast data it's easy to get the vector3 of the hit point 
+			Vector3 worldVector = hit.point;
+			//And it's just as easy to get the gps coordinate of the hit point.
+			Coordinates gpsCoordinates = Coordinates.convertVectorToCoordinates(hit.point);
+
+			if (currentProjector != null)
+				Destroy(currentProjector);
+
+			//Add a simple projector to the tapped point
+			currentProjector = Instantiate(projectorPrefab);
+			worldVector.y += 5.5f;
+			currentProjector.transform.position = worldVector;
+		}
+	}
 	float EvaluateCurrentHeight(float currentDistance)
 	{
 

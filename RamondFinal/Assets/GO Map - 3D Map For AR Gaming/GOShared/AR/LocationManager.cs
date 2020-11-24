@@ -398,6 +398,14 @@ namespace GoShared {
 				onLocationChanged.Invoke(currentLocation);
 			}
 		}
+		public void UpdateLocation(Vector3 location)
+        {
+			currentLocation = Coordinates.convertVectorToCoordinates(location);
+			if (onLocationChanged != null)
+			{
+				onLocationChanged.Invoke(currentLocation);
+			}
+		}
 
 		#region DEMO LOCATIONS
 
