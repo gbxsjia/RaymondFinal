@@ -27,6 +27,15 @@ public class UIManager : MonoBehaviour
     public MainStateType mainState;
 
     public event System.Action MainStateChangeEvent;
+    public void ChangeState(int typeIndex)
+    {
+        ChangeState((MainStateType)typeIndex);
+    }
+
+    public bool IsMainState(MainStateType type)
+    {
+        return mainState == type;
+    }
     public void ChangeState(MainStateType type)
     {
         if (mainState == type)
@@ -34,9 +43,43 @@ public class UIManager : MonoBehaviour
             return;
         }
         mainState = type;
+
+        UIStateMaintain(type);
+
         if (MainStateChangeEvent != null)
         {
             MainStateChangeEvent();
+        }
+    }
+
+    private void UIStateMaintain(MainStateType type)
+    {
+        switch (type)
+        {
+            case MainStateType.Home:
+                BottomParent.SetActive(true);
+                StatisticParent.SetActive(true);
+                CalenderParent.SetActive(true);
+                AccountParent.SetActive(true);
+                PlanPageIntroParent.SetActive(false);
+                PlanPageParent.SetActive(false);
+                break;
+            case MainStateType.PlanPage:
+                BottomParent.SetActive(true);
+                StatisticParent.SetActive(false);
+                CalenderParent.SetActive(false);
+                AccountParent.SetActive(false);
+                PlanPageIntroParent.SetActive(true);
+                PlanPageParent.SetActive(false);
+                break;
+            case MainStateType.PlanProcess:
+                BottomParent.SetActive(false);
+                StatisticParent.SetActive(false);
+                CalenderParent.SetActive(false);
+                AccountParent.SetActive(false);
+                PlanPageIntroParent.SetActive(false);
+                PlanPageParent.SetActive(true);
+                break;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using GoShared;
+using UnityEngine.EventSystems;
 
 public class CameraAvatar : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class CameraAvatar : MonoBehaviour
 
 	public GameObject projectorPrefab;
 	private GameObject currentProjector;
+
+	public GameObject waypointPrefab;
 
 	private float ClickTimer;
 	private void Start()
@@ -128,6 +131,11 @@ public class CameraAvatar : MonoBehaviour
 
 	private void Click()
 	{
+        if (EventSystem.current.currentSelectedGameObject!=null)
+		{
+			return;
+        }
+
 		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity, GoMap.GOMap.GetActiveMasks()))
@@ -143,8 +151,16 @@ public class CameraAvatar : MonoBehaviour
 
 			//Add a simple projector to the tapped point
 			currentProjector = Instantiate(projectorPrefab);
-			worldVector.y += 5.5f;
+			worldVector.y += 3f;
 			currentProjector.transform.position = worldVector;
+
+            switch (UIManager.instance.mainState)
+            {
+				case MainStateType.PlanProcess:
+					GameObject wp = Instantiate(waypointPrefab, worldVector, Quaternion.identity);
+					break;
+            }
+			
 		}
 	}
 	float EvaluateCurrentHeight(float currentDistance)
