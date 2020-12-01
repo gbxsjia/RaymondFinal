@@ -44,7 +44,6 @@ public class CameraAvatar : MonoBehaviour
         while (Vector3.Distance(transform.position, LocationManager.instance.currentLocation.convertCoordinateToVector(0))>1f)
         {
 			transform.position = Vector3.Lerp(transform.position, LocationManager.instance.currentLocation.convertCoordinateToVector(0), 0.1f);
-			print(transform.position);
 			yield return null;
 		}
 		isReady = true;

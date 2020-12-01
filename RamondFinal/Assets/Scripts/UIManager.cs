@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     public GameObject AccountParent;
     public GameObject PlanPageIntroParent;
     public GameObject PlanPageParent;
+
+    public GameObject MiniMapPrefab;
     private void Awake()
     {
         if (instance != null)
@@ -42,9 +44,11 @@ public class UIManager : MonoBehaviour
         {
             return;
         }
+        UIStateEnd(mainState);
+
         mainState = type;
 
-        UIStateMaintain(type);
+        UIStateStart(type);
 
         if (MainStateChangeEvent != null)
         {
@@ -52,35 +56,25 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void UIStateMaintain(MainStateType type)
+    private void UIStateStart(MainStateType type)
+    {
+    
+    }
+    private void UIStateEnd(MainStateType type)
     {
         switch (type)
         {
             case MainStateType.Home:
-                BottomParent.SetActive(true);
-                StatisticParent.SetActive(true);
-                CalenderParent.SetActive(true);
-                AccountParent.SetActive(true);
-                PlanPageIntroParent.SetActive(false);
-                PlanPageParent.SetActive(false);
+
                 break;
-            case MainStateType.PlanPage:
-                BottomParent.SetActive(true);
-                StatisticParent.SetActive(false);
-                CalenderParent.SetActive(false);
-                AccountParent.SetActive(false);
-                PlanPageIntroParent.SetActive(true);
-                PlanPageParent.SetActive(false);
-                break;
-            case MainStateType.PlanProcess:
-                BottomParent.SetActive(false);
-                StatisticParent.SetActive(false);
-                CalenderParent.SetActive(false);
-                AccountParent.SetActive(false);
-                PlanPageIntroParent.SetActive(false);
-                PlanPageParent.SetActive(true);
-                break;
+
+
         }
+    }
+    public void NewPlanSaved()
+    {
+        GameObject g = Instantiate(MiniMapPrefab);
+        g.GetComponent<UI_MiniMap>().SaveMap();
     }
 }
 public enum MainStateType
@@ -88,6 +82,7 @@ public enum MainStateType
     Home,
     PlanPage,
     PlanProcess,
+    PlanDone,
     RunPage,
     RunProcess,
     GuideBook,
