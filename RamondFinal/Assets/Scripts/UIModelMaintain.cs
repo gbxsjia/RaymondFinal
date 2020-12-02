@@ -10,7 +10,6 @@ public class UIModelMaintain : MonoBehaviour
     {
         UIManager.instance.MainStateChangeEvent += OnStateChange;
         OnStateChange();
-        print(1);
     }
 
     private void OnStateChange()

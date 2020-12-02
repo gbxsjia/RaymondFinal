@@ -6,7 +6,6 @@ public class ScreenShotHandler : MonoBehaviour
 {
     public static ScreenShotHandler instance;
     private Camera myCamera;
-    private bool takeScreenshotOnNextFrame;
 
     private void Awake()
     {
@@ -17,31 +16,38 @@ public class ScreenShotHandler : MonoBehaviour
     public event System.Action<Texture2D> ScreenShotCapturedEvent;
     private void OnPostRender()
     {
-        if (takeScreenshotOnNextFrame)
-        {
-            takeScreenshotOnNextFrame = false;
-            RenderTexture renderTexture = myCamera.targetTexture;
-
-            Texture2D renderResult = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.ARGB32,false);
-            Rect rect = new Rect(0, 0, renderTexture.width, renderTexture.height);
-            renderResult.ReadPixels(rect, 0, 0);
-
-            byte[] byteArry = renderResult.EncodeToPNG();
-            System.IO.File.WriteAllBytes(Application.dataPath + "/CameraScreenshot.png", byteArry);
-
-            if (ScreenShotCapturedEvent != null)
-            {
-                ScreenShotCapturedEvent(renderResult);
-            }
-            RenderTexture.ReleaseTemporary(renderTexture);
-            myCamera.targetTexture = null;
-        }
+   
     }
     public void TakeScreenshot(int width, int height)
     {
-        myCamera.targetTexture = RenderTexture.GetTemporary(width, height, 16);
+        StartCoroutine(ScreenshotProcess(width, height));
+    }
 
-        takeScreenshotOnNextFrame = true;
+    private IEnumerator ScreenshotProcess(int resWidth, int resHeight)
+    {
+        yield return new WaitForEndOfFrame();
+        //Texture2D renderResult = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, true);
+        //renderResult.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+
+        //renderResult.Apply();
+
+        RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
+        myCamera.targetTexture = rt;
+        Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
+        myCamera.Render();
+        RenderTexture.active = rt;
+        screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
+        myCamera.targetTexture = null;
+        RenderTexture.active = null; // JC: added to avoid errors
+        screenShot.Apply();
+        Destroy(rt);
+       
+
+
+        if (ScreenShotCapturedEvent != null)
+        {
+            ScreenShotCapturedEvent(screenShot);
+        }
     }
 
 }

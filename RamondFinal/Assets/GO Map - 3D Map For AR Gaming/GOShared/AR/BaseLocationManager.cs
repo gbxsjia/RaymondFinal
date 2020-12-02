@@ -40,7 +40,6 @@ namespace GoShared
 
         public void SetOrigin(Coordinates coords)
         {
-            Debug.Log("[Location Manager] set origin " + coords.toLatLongString());
             IsOriginSet = true;
             worldOrigin = coords.tileCenter(zoomLevel);
             Coordinates.setWorldOrigin(worldOrigin, worldScale);

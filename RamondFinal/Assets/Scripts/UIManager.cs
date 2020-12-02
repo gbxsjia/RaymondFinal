@@ -74,7 +74,8 @@ public class UIManager : MonoBehaviour
     public void NewPlanSaved()
     {
         GameObject g = Instantiate(MiniMapPrefab);
-        g.GetComponent<UI_MiniMap>().SaveMap();
+        g.GetComponentInChildren<UI_MiniMap>().SaveMap();
+        g.transform.SetParent(transform);
     }
 }
 public enum MainStateType

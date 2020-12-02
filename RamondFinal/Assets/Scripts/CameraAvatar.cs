@@ -21,6 +21,7 @@ public class CameraAvatar : MonoBehaviour
 	private Vector3 LastMousePosition;
 	private bool firstLaunch = true;
 	private bool isReady = false;
+	public bool canControl=true;
 
 	public float DragSpeed;
 
@@ -30,7 +31,14 @@ public class CameraAvatar : MonoBehaviour
 	public GameObject waypointPrefab;
 
 	private float ClickTimer;
-	private void Start()
+
+	public static CameraAvatar instance;
+	public Transform CameraTransform;
+    private void Awake()
+    {
+		instance = this;
+    }
+    private void Start()
     {
 		StartCoroutine(LoadStartPosition());
 	}
@@ -56,7 +64,7 @@ public class CameraAvatar : MonoBehaviour
 
     void updateOrbit()
 	{
-		if (Camera.main == null || !isReady)
+		if (Camera.main == null || !isReady || !canControl)
 			return;
 
 		bool drag = false;
@@ -172,5 +180,27 @@ public class CameraAvatar : MonoBehaviour
 
 		return height;
 
+	}
+
+	public void MoveCamera(Vector3 TargetPosition, float duration)
+    {
+		StartCoroutine(MoveCameraProcess(TargetPosition, duration));
+    }
+	private IEnumerator MoveCameraProcess(Vector3 TargetPosition, float duration)
+	{
+		canControl = false;
+		Vector3 startPosition = CameraTransform.position;
+		Quaternion startRotation = CameraTransform.rotation;
+		float timer = duration;
+		while (timer > 0)
+		{
+			CameraTransform.position = Vector3.Lerp(startPosition, TargetPosition, 1 - timer / duration);
+			CameraTransform.rotation = Quaternion.Slerp(startRotation, Quaternion.Euler(90, 0, 0), 1 - timer / duration);
+			print(Vector3.Lerp(startPosition, TargetPosition, 1 - timer / duration));
+			timer -= Time.deltaTime;
+			yield return null;
+		}
+
+		canControl = true;
 	}
 }

@@ -10,7 +10,7 @@ public class UI_MiniMap : MonoBehaviour
     float minZ = 999999;
     float maxZ = -999999;
 
-    public Image image;
+    public RawImage image;
 
 
     public void SaveMap()
@@ -22,7 +22,24 @@ public class UI_MiniMap : MonoBehaviour
             maxZ = Mathf.Max(maxZ, w.transform.position.z);
             minZ = Mathf.Min(minZ, w.transform.position.z);
         }
+        float width = maxX - minX;
+        float height = maxZ - minZ;
+        if (width < 50)
+        {
+            width = 50;
+        }
+        else if (width > 200)
+        {
+            width = 20;
+        }
+        Vector3 targetposition = new Vector3((minX + maxX) / 2, width / 2 * Mathf.Tan(Mathf.Deg2Rad * 60)+50, (minZ + maxZ) / 2);
+        StartCoroutine(SaveMapProcess(targetposition, 10));
+    }
 
+    private IEnumerator SaveMapProcess(Vector3 TargetPosition, float duration)
+    {
+        CameraAvatar.instance.MoveCamera(TargetPosition, duration);
+        yield return new WaitForSeconds(duration);
         ScreenShotHandler.instance.TakeScreenshot(500, 500);
     }
 
@@ -34,7 +51,7 @@ public class UI_MiniMap : MonoBehaviour
 
     private void OnCaptured(Texture2D t)
     {
-        image.sprite = Sprite.Create(t, new Rect(0, 0, 500, 500), new Vector2(0.5f, 0.5f), 100);
+        image.texture = t;
 
     }
 }
