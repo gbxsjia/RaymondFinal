@@ -7141,6 +7141,11 @@ PrefabInstance:
       propertyPath: orthographic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3041851565011436258, guid: 957bf2ad717028a4f8b6e55c2dec6890,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6371128536531697187, guid: 957bf2ad717028a4f8b6e55c2dec6890,
         type: 3}
       propertyPath: m_IsActive

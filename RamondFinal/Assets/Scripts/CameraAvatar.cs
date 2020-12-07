@@ -196,10 +196,19 @@ public class CameraAvatar : MonoBehaviour
 		{
 			CameraTransform.position = Vector3.Lerp(startPosition, TargetPosition, 1 - timer / duration);
 			CameraTransform.rotation = Quaternion.Slerp(startRotation, Quaternion.Euler(90, 0, 0), 1 - timer / duration);
-			print(Vector3.Lerp(startPosition, TargetPosition, 1 - timer / duration));
 			timer -= Time.deltaTime;
 			yield return null;
 		}
+		yield return new WaitForSeconds(1);
+		timer = duration;
+		while (timer > 0)
+		{
+			CameraTransform.position = Vector3.Lerp(TargetPosition, startPosition, 1 - timer / duration);
+			CameraTransform.rotation = Quaternion.Slerp(Quaternion.Euler(90, 0, 0), startRotation, 1 - timer / duration);
+			timer -= Time.deltaTime;
+			yield return null;
+		}
+
 
 		canControl = true;
 	}

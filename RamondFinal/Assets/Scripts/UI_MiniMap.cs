@@ -33,14 +33,14 @@ public class UI_MiniMap : MonoBehaviour
             width = 20;
         }
         Vector3 targetposition = new Vector3((minX + maxX) / 2, width / 2 * Mathf.Tan(Mathf.Deg2Rad * 60)+50, (minZ + maxZ) / 2);
-        StartCoroutine(SaveMapProcess(targetposition, 10));
+        StartCoroutine(SaveMapProcess(targetposition, 1));
     }
 
     private IEnumerator SaveMapProcess(Vector3 TargetPosition, float duration)
     {
         CameraAvatar.instance.MoveCamera(TargetPosition, duration);
         yield return new WaitForSeconds(duration);
-        ScreenShotHandler.instance.TakeScreenshot(500, 500);
+        ScreenShotHandler.instance.TakeScreenshot(540, 960);
     }
 
     private void Start()
@@ -52,6 +52,7 @@ public class UI_MiniMap : MonoBehaviour
     private void OnCaptured(Texture2D t)
     {
         image.texture = t;
-
+        image.enabled = true;
+        GetComponentInChildren<Animator>().Play("Minimap");
     }
 }

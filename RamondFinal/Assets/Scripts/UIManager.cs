@@ -75,6 +75,7 @@ public class UIManager : MonoBehaviour
     {
         GameObject g = Instantiate(MiniMapPrefab);
         g.GetComponentInChildren<UI_MiniMap>().SaveMap();
+        g.transform.position = new Vector3(540, 960);
         g.transform.SetParent(transform);
     }
 }
