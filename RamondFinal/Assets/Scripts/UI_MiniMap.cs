@@ -54,5 +54,6 @@ public class UI_MiniMap : MonoBehaviour
         image.texture = t;
         image.enabled = true;
         GetComponentInChildren<Animator>().Play("Minimap");
+        WaypointManager.instance.ClearWaypoints();
     }
 }

@@ -26,7 +26,7 @@ public class WaypointManager : MonoBehaviour
         if (lineRenderer != null)
         {
             lineRenderer.positionCount++;
-            lineRenderer.SetPosition(lineRenderer.positionCount - 1, point.transform.position);
+            lineRenderer.SetPosition(lineRenderer.positionCount - 1, point.transform.position-Vector3.up);
         }
     }
     public void DeleteLastWayPoint()
@@ -39,6 +39,13 @@ public class WaypointManager : MonoBehaviour
             lineRenderer.positionCount--;
         }
     }
-
+    public void ClearWaypoints()
+    {
+        for (int i = waypoints.Count - 1; i >= 0; i--)
+        {
+            Destroy(waypoints[i].gameObject);
+        }
+        lineRenderer.positionCount = 0;
+    }
    
 }
