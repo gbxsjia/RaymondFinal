@@ -78,6 +78,10 @@ public class UIManager : MonoBehaviour
         g.transform.position = new Vector3(540, 960);
         g.transform.SetParent(transform);
     }
+    public void PlanDelete()
+    {
+        WaypointManager.instance.ClearWaypoints();
+    }
 }
 public enum MainStateType
 {

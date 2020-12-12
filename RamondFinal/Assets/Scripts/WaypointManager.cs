@@ -45,6 +45,7 @@ public class WaypointManager : MonoBehaviour
         {
             Destroy(waypoints[i].gameObject);
         }
+        waypoints.Clear();
         lineRenderer.positionCount = 0;
     }
    

@@ -5302,6 +5302,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 554048846}
+        m_MethodName: PlanDelete
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1499844756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6749,7 +6760,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2041737635}
   - component: {fileID: 2041737636}
-  - component: {fileID: 2041737637}
   m_Layer: 5
   m_Name: PlanHolder
   m_TagString: Untagged
@@ -6791,18 +6801,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActiveList: 
   CloseList: 0200000003000000
---- !u!114 &2041737637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2041737634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43a1836d2ffd03846b532e26c6b92078, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2062297345
 GameObject:
   m_ObjectHideFlags: 0
@@ -6904,6 +6902,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2089387634}
   - component: {fileID: 2089387635}
+  - component: {fileID: 2089387636}
   m_Layer: 5
   m_Name: Holder
   m_TagString: Untagged
@@ -6955,6 +6954,25 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &2089387636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2089387633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43a1836d2ffd03846b532e26c6b92078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plans: []
+  StartSize: {x: 1, y: 1, z: 1}
+  EndSize: {x: 0.3, y: 0.3, z: 0.3}
+  Duration: 1
+  XOffset: -375
+  Width: 230
+  adjust: 0
 --- !u!1 &2096667271
 GameObject:
   m_ObjectHideFlags: 0
