@@ -136,7 +136,11 @@ public class CameraAvatar : MonoBehaviour
 		}
 	}
 
-	private void Click()
+	public void ForceCameraPosition(Vector3 pos)
+    {
+		transform.position = pos;
+    }
+    private void Click()
 	{
         if (EventSystem.current.currentSelectedGameObject!=null)
 		{

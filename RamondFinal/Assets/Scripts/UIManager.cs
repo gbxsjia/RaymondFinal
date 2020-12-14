@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
     public GameObject PlanPageParent;
 
     public GameObject MiniMapPrefab;
+
+    public UI_MiniMap selectedPlan;
     private void Awake()
     {
         if (instance != null)
@@ -58,7 +60,25 @@ public class UIManager : MonoBehaviour
 
     private void UIStateStart(MainStateType type)
     {
-    
+        switch (type)
+        {
+            case MainStateType.Home:
+                if (UI_PlanHolder.instance.plans.Count > 0)
+                {
+                    if (!selectedPlan)
+                    {
+                        SelectPlan(UI_PlanHolder.instance.plans[0]);
+                    }
+                }
+                break;
+            case MainStateType.PlanProcess:
+                WaypointManager.instance.ClearWaypoints();
+                break;
+            case MainStateType.RunProcess:
+                WaypointManager.instance.ClearWaypoints();
+                break;
+        }
+       
     }
     private void UIStateEnd(MainStateType type)
     {
@@ -67,7 +87,7 @@ public class UIManager : MonoBehaviour
             case MainStateType.Home:
 
                 break;
-
+      
 
         }
     }
@@ -77,10 +97,31 @@ public class UIManager : MonoBehaviour
         g.GetComponentInChildren<UI_MiniMap>().SaveMap();
         g.transform.position = new Vector3(540, 960);
         g.transform.SetParent(transform);
+
+       
     }
     public void PlanDelete()
     {
         WaypointManager.instance.ClearWaypoints();
+    }
+    
+    public void SelectPlan(UI_MiniMap plan)
+    {
+        if(plan == selectedPlan)
+        {
+            ChangeState(MainStateType.RunPlanDetail);
+        }
+        else
+        {
+            if (selectedPlan)
+            {
+                selectedPlan.SetSelectState(false);
+            }
+           
+            selectedPlan = plan;
+            plan.SetSelectState(true);
+            WaypointManager.instance.UsePlanPositions(plan.Positions);
+        }
     }
 }
 public enum MainStateType
@@ -92,5 +133,7 @@ public enum MainStateType
     RunPage,
     RunProcess,
     GuideBook,
-    Achievements
+    Achievements,
+    RunPlanDetail,
+    RunPlanProcess
 }

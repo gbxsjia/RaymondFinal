@@ -6,6 +6,7 @@ public class WaypointManager : MonoBehaviour
 {
     public static WaypointManager instance;
 
+    public GameObject WayPointPrefab;
     public List<Waypoint> waypoints;
     public LineRenderer lineRenderer;
     private void Awake()
@@ -48,5 +49,22 @@ public class WaypointManager : MonoBehaviour
         waypoints.Clear();
         lineRenderer.positionCount = 0;
     }
-   
+   public void UpdateLastWayPointPosition(Vector3 pos)
+    {
+        if (waypoints.Count > 0)
+        {
+            waypoints[waypoints.Count - 1].transform.position = pos;
+            lineRenderer.SetPosition(lineRenderer.positionCount - 1, pos);
+        }
+    }
+
+    public void UsePlanPositions(Vector3[] poses)
+    {
+        ClearWaypoints();
+        for (int i = 0; i < poses.Length; i++)
+        {
+            Instantiate(WayPointPrefab, poses[i], Quaternion.identity);
+        }
+        
+    }
 }

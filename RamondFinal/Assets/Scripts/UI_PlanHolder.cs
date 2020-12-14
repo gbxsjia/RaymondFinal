@@ -13,13 +13,15 @@ public class UI_PlanHolder : MonoBehaviour
     public float Duration;
 
     public float XOffset;
+    public float YOffset = 400;
     public float Width;
 
     public bool adjust;
     private void Awake()
     {
-        instance = this;
+        instance = this;        
     }
+
     private void Update()
     {
         if (adjust)
@@ -34,13 +36,16 @@ public class UI_PlanHolder : MonoBehaviour
     public void NewPlanSave(UI_MiniMap minimap)
     {        
         plans.Add(minimap);
+        minimap.transform.SetParent(transform);
+        minimap.transform.position = new Vector3(540, 960, 0);
         StartCoroutine(NewPlanProcess(minimap));
     }
 
     public Vector3 GetPlanTargetPosition(int index)
     {
-        return transform.position + Vector3.right * (XOffset + index * Width);
+        return transform.position + Vector3.right * (XOffset + index * Width) + Vector3.up * YOffset;
     }
+    
     private IEnumerator NewPlanProcess(UI_MiniMap minimap)
     {
         yield return new WaitForSeconds(0.5f);
@@ -54,5 +59,7 @@ public class UI_PlanHolder : MonoBehaviour
             timer -= Time.deltaTime;
             yield return null;
         }
+        minimap.transform.localScale = EndSize;
+        minimap.transform.position = GetPlanTargetPosition(plans.Count - 1);
     }
 }
