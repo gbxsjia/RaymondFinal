@@ -22,10 +22,12 @@ public class UI_RunPage : MonoBehaviour
 
     public float MoveSpeed;
 
+    private bool isPausing;
 
+    private Coroutine RunCoruntine;
     public void StartRun()
     {
-        StartCoroutine(RunProcess());
+        RunCoruntine= StartCoroutine(RunProcess());
         UIManager.instance.MainStateChangeEvent += OnStateChange;
     }
 
@@ -34,11 +36,20 @@ public class UI_RunPage : MonoBehaviour
         TimerText.text ="00:00";
         RunMilesText.text = 0.ToString();
         WaypointManager.instance.ClearWaypoints();
-
+        StopCoroutine(RunCoruntine);
         UIManager.instance.MainStateChangeEvent -= OnStateChange;
     }
 
+    public void SetPauseState()
+    {
+        isPausing = !isPausing;
+    }
 
+    public void Restart()
+    {
+        StopCoroutine(RunCoruntine);
+        StartRun();
+    }
     private IEnumerator RunProcess()
     {
         if (UIManager.instance.selectedPlan != null)
@@ -49,6 +60,7 @@ public class UI_RunPage : MonoBehaviour
                 Locations.Add(UIManager.instance.selectedPlan.Positions[i]);
             }
         }
+        WaypointManager.instance.ClearWaypoints();
 
         CounterParent.SetActive(true);
         TimeCountText.text = "3";
@@ -69,27 +81,32 @@ public class UI_RunPage : MonoBehaviour
         Instantiate(WaypointPrefab, CurrentLocation, Quaternion.identity);
 
         yield return new WaitForSeconds(0.5f);
+        CameraAvatar.instance.MoveAvatar(CurrentLocation, 0.3f);
 
         while (Index < Locations.Count)
         {
-            CurrentLocation = Vector3.MoveTowards(CurrentLocation, Locations[Index], MoveSpeed * Time.deltaTime);
-            WaypointManager.instance.UpdateLastWayPointPosition(CurrentLocation);
-            CameraAvatar.instance.ForceCameraPosition(CurrentLocation);
-            TimerText.text = Mathf.FloorToInt(runMinute) + ":" + Mathf.FloorToInt(runSecond);
-            RunMilesText.text = runDistance.ToString("#0.0");
+            if (!isPausing)
+            {
+                CurrentLocation = Vector3.MoveTowards(CurrentLocation, Locations[Index], MoveSpeed * Time.deltaTime);
+                WaypointManager.instance.UpdateLastWayPointPosition(CurrentLocation);
+                CameraAvatar.instance.ForceCameraPosition(CurrentLocation);
+                TimerText.text = Mathf.FloorToInt(runMinute) + ":" + Mathf.FloorToInt(runSecond);
+                RunMilesText.text = runDistance.ToString("#0.0");
 
-            runSecond += Time.deltaTime * 10;
-            if (runSecond >= 60)
-            {
-                runSecond -= 60;
-                runMinute++;
+                runSecond += Time.deltaTime * 10;
+                if (runSecond >= 60)
+                {
+                    runSecond -= 60;
+                    runMinute++;
+                }
+                runDistance += Time.deltaTime * MoveSpeed * 0.02f;
+                if (Vector3.Distance(CurrentLocation, Locations[Index]) <= 0.1f)
+                {
+                    Instantiate(WaypointPrefab, CurrentLocation, Quaternion.identity);
+                    Index++;
+                }
             }
-            runDistance += Time.deltaTime * MoveSpeed * 0.02f;
-            if (Vector3.Distance(CurrentLocation, Locations[Index])<=0.1f)
-            {
-                Instantiate(WaypointPrefab, CurrentLocation, Quaternion.identity);
-                Index++;
-            }       
+
             yield return null;
         }
        

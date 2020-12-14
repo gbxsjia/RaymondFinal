@@ -216,4 +216,29 @@ public class CameraAvatar : MonoBehaviour
 
 		canControl = true;
 	}
+	public void MoveAvatar(Vector3 TargetPosition, float duration)
+	{
+		if (canControl)
+		{
+			if (MoveAvatarCoroutine != null)
+			{
+				StopCoroutine(MoveAvatarCoroutine);
+			}
+
+			MoveAvatarCoroutine = StartCoroutine(MoveAvatarProcess(TargetPosition, duration));
+		}
+		
+    }
+	private Coroutine MoveAvatarCoroutine;
+	private IEnumerator MoveAvatarProcess(Vector3 TargetPosition, float duration)
+	{	
+		Vector3 startPosition = transform.position;
+		float timer = duration;
+		while (timer > 0)
+		{
+			transform.position = Vector3.Lerp(startPosition, TargetPosition, 1 - timer / duration);
+			timer -= Time.deltaTime;
+			yield return null;
+		}
+	}
 }

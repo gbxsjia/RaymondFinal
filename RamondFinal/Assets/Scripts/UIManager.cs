@@ -121,6 +121,7 @@ public class UIManager : MonoBehaviour
             selectedPlan = plan;
             plan.SetSelectState(true);
             WaypointManager.instance.UsePlanPositions(plan.Positions);
+            CameraAvatar.instance.MoveAvatar(plan.Positions[0], 0.5f);
         }
     }
 }
